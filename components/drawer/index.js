@@ -4,7 +4,13 @@ import { createPortal } from "react-dom"; //传送门 将节点挂载在root 节
 import cls from "classnames";
 import { CloseIcon } from "../icon";
 
-const placements = ["right", "top", "bottom", "left"];
+const placements = {
+  right: "right",
+  top: "top",
+  bottom: "bottom",
+  left: "left"
+};
+
 export default class Drawer extends PureComponent {
   state = {
     init: false
@@ -12,7 +18,7 @@ export default class Drawer extends PureComponent {
   static defaultProps = {
     prefixCls: "cuke-drawer",
     visible: false,
-    getTarget: () => document.body,
+    getPopupContainer: () => document.body,
     title: "",
     onClose: () => {},
     maskClosable: true,
@@ -21,7 +27,7 @@ export default class Drawer extends PureComponent {
     width: 300,
     height: 300,
     zIndex: 999,
-    placement: placements[0],
+    placement: placements.right,
     footer: null
   };
   static propTypes = {
@@ -43,9 +49,10 @@ export default class Drawer extends PureComponent {
     zIndex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     width: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     height: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    placement: PropTypes.oneOf(placements),
-    getTarget: PropTypes.func,
-    onClose: PropTypes.func
+    placement: PropTypes.oneOf(Object.values(placements)),
+    getPopupContainer: PropTypes.func,
+    onClose: PropTypes.func,
+    wrapperClassName: PropTypes.string
   };
   constructor(props) {
     super(props);
@@ -83,7 +90,7 @@ export default class Drawer extends PureComponent {
       visible,
       onClose,
       className,
-      getTarget,
+      getPopupContainer,
       closable,
       maskClosable,
       showMask,
@@ -93,6 +100,7 @@ export default class Drawer extends PureComponent {
       placement,
       style,
       footer,
+      wrapperClassName,
       ...attr
     } = this.props;
 
@@ -111,7 +119,11 @@ export default class Drawer extends PureComponent {
             {...maskClickHandle}
           />
         )}
-        <div role="dialog" tabIndex="-1" className={cls(`${prefixCls}-wrap`)}>
+        <div
+          role="dialog"
+          tabIndex="-1"
+          className={cls(`${prefixCls}-wrap`, wrapperClassName)}
+        >
           <div
             className={cls(
               prefixCls,
@@ -145,7 +157,7 @@ export default class Drawer extends PureComponent {
           </div>
         </div>
       </>,
-      getTarget()
+      getPopupContainer()
     );
   }
 }

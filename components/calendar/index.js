@@ -5,10 +5,14 @@ import moment from "moment";
 import Spin from "../spin";
 import { ArrowLeftIcon, ArrowRightIcon } from "../icon";
 
+const CALENDAR_HEADERS = ["一", "二", "三", "四", "五", "六", "日"];
+const WEEKDAY = 7;
+
 export default class Calendar extends React.PureComponent {
   static defaultProps = {
     prefixCls: "cuke-calendar",
-    loading: false
+    loading: false,
+    miniMode: false
   };
   static propTypes = {
     prefixCls: PropTypes.string.isRequired,
@@ -17,19 +21,21 @@ export default class Calendar extends React.PureComponent {
     dateCellRender: PropTypes.func,
     format: PropTypes.string,
     loading: PropTypes.bool,
-    tip: PropTypes.any
+    tip: PropTypes.any,
+    miniMode: PropTypes.bool
   };
 
   static getDerivedStateFromProps({ value }, { momentSelected }) {
-    if (!value || value.valueOf() === momentSelected.valueOf()) {
-      return null;
+    if (value && !momentSelected.isSame(value)) {
+      return {
+        momentSelected: value
+      };
     }
-    return { momentSelected: value, selectedDate: value.date() };
+    return null;
   }
 
   state = {
-    momentSelected: this.props.defaultValue || this.props.value || moment(),
-    selectedDate: moment().date()
+    momentSelected: this.props.defaultValue || this.props.value || moment()
   };
 
   addMonth = () => {
@@ -53,11 +59,19 @@ export default class Calendar extends React.PureComponent {
       }
     );
   };
-  selectedDate = date => () => {
+  selectedDate = date => isNextMonth => () => {
+    let momentSelected = this.state.momentSelected.clone();
+
+    if (isNextMonth === true) {
+      momentSelected.add(1, "month").date(date);
+    } else if (isNextMonth === false) {
+      momentSelected.subtract(1, "month").date(date);
+    } else {
+      momentSelected.date(date);
+    }
     this.setState(
       {
-        selectedDate: date,
-        momentSelected: this.state.momentSelected.clone().date(date)
+        momentSelected
       },
       () => {
         if (this.props.onChange) {
@@ -70,14 +84,18 @@ export default class Calendar extends React.PureComponent {
     const { prefixCls } = this.props;
     const momentDateFirst = this.state.momentSelected.clone().date(1);
     const daysInMonth = momentDateFirst.daysInMonth();
+    const dayOfFirstDate = momentDateFirst.day();
 
     const weekdayInMonth = momentDateFirst.isoWeekday();
-    const lastDaysInMonth = (daysInMonth + weekdayInMonth - 1) % 7;
+    const lastDaysInMonth = (daysInMonth + weekdayInMonth - 1) % WEEKDAY;
+
+    const momentLastMonth = momentDateFirst.clone().add(-1, "months");
+    const lastMonthDaysInMonth = momentLastMonth.daysInMonth();
 
     return (
       <>
         <div className={`${prefixCls}-day-header`}>
-          {["一", "二", "三", "四", "五", "六", "日"].map(day => (
+          {CALENDAR_HEADERS.map(day => (
             <span
               className={cls(`${prefixCls}-item`, `${prefixCls}-day-title`)}
               key={day}
@@ -88,12 +106,28 @@ export default class Calendar extends React.PureComponent {
         </div>
 
         <div className={`${prefixCls}-content`}>
-          {new Array(weekdayInMonth - 1).fill(null).map((_, index) => (
-            <span
-              className={cls(`${prefixCls}-item`)}
-              key={`first-date-${index}`}
-            />
-          ))}
+          {new Array(weekdayInMonth - 1).fill().map((_, date) => {
+            const currentDate =
+              dayOfFirstDate === 0
+                ? lastMonthDaysInMonth - WEEKDAY + date + 2
+                : lastMonthDaysInMonth - dayOfFirstDate + date + 2;
+            return (
+              <span
+                className={cls(`${prefixCls}-item`, `${prefixCls}-last-month`)}
+                key={`first-date-${date}`}
+                onClick={this.selectedDate(currentDate)(false)}
+              >
+                {currentDate}
+                <div className={cls(`${prefixCls}-item-content`)}>
+                  {this.props.dateCellRender &&
+                    this.props.dateCellRender(
+                      currentDate,
+                      this.state.momentSelected.clone()
+                    )}
+                </div>
+              </span>
+            );
+          })}
 
           {new Array(daysInMonth).fill(null).map((_, date) => (
             <span
@@ -102,11 +136,11 @@ export default class Calendar extends React.PureComponent {
                 `${prefixCls}-current-month`,
                 {
                   [`${prefixCls}-selected-date`]:
-                    this.state.selectedDate === date + 1
+                    this.state.momentSelected.date() === date + 1
                 }
               )}
               key={`date-${date}`}
-              onClick={this.selectedDate(date + 1)}
+              onClick={this.selectedDate(date + 1)()}
             >
               {date + 1}
               <div className={cls(`${prefixCls}-item-content`)}>
@@ -124,7 +158,8 @@ export default class Calendar extends React.PureComponent {
             .map((_, date) => (
               <span
                 className={cls(`${prefixCls}-item`, `${prefixCls}-next-month`)}
-                key={`placeholder-${date}`}
+                key={`next-date-${date}`}
+                onClick={this.selectedDate(date + 1)(true)}
               >
                 {date + 1}
               </span>
@@ -141,10 +176,16 @@ export default class Calendar extends React.PureComponent {
       tip,
       onMonthChange, //eslint-disable-line
       dateCellRender, //eslint-disable-line
+      miniMode,
       ...attr
     } = this.props;
     return (
-      <div className={cls(prefixCls, className)} {...attr}>
+      <div
+        className={cls(prefixCls, className, {
+          [`${prefixCls}-mini`]: miniMode
+        })}
+        {...attr}
+      >
         <Spin spinning={loading} tip={tip} size="large">
           <div className={cls(`${prefixCls}-header`)}>
             <ArrowLeftIcon

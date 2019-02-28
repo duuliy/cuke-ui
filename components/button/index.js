@@ -3,19 +3,36 @@ import PropTypes from "prop-types";
 import cls from "classnames";
 import { LoadingIcon } from "../icon";
 
+const sizes = {
+  small: "small",
+  default: "default",
+  large: "large"
+};
+
+const types = {
+  primary: "primary",
+  default: "default",
+  warning: "warning",
+  success: "success",
+  error: "error",
+  info: "info",
+  disabled: "disabled"
+};
+
 export default class Button extends PureComponent {
   static defaultProps = {
     prefixCls: "cuke-button",
     href: "",
-    type: "default",
+    type: types.default,
     htmlType: "button",
-    size: "default",
+    size: sizes.default,
     loading: false,
     block: false,
     disabled: false,
     hollow: false,
     dashed: false,
-    circle: false
+    circle: false,
+    plain: false
   };
   static propTypes = {
     prefixCls: PropTypes.string.isRequired,
@@ -25,18 +42,11 @@ export default class Button extends PureComponent {
     disabled: PropTypes.bool,
     dashed: PropTypes.bool,
     circle: PropTypes.bool,
+    plain: PropTypes.bool,
     htmlType: PropTypes.string,
     href: PropTypes.string,
-    type: PropTypes.oneOf([
-      "primary",
-      "default",
-      "warning",
-      "success",
-      "error",
-      "info",
-      "disabled"
-    ]),
-    size: PropTypes.oneOf(["small", "default", "large"])
+    type: PropTypes.oneOf(Object.values(types)),
+    size: PropTypes.oneOf(Object.values(sizes))
   };
   render() {
     const {
@@ -54,12 +64,9 @@ export default class Button extends PureComponent {
       href,
       dashed,
       circle,
+      plain,
       ...attr
     } = this.props;
-
-    const checkType = btnType => {
-      return type === btnType;
-    };
 
     const isDisabled = disabled || loading ? { disabled: true } : { onClick };
 
@@ -67,23 +74,18 @@ export default class Button extends PureComponent {
       ...attr,
       ...isDisabled,
       type: htmlType,
-      className: cls(prefixCls, {
-        [`${prefixCls}-primary`]: checkType("primary"),
-        [`${prefixCls}-warning`]: checkType("warning"),
-        [`${prefixCls}-success`]: checkType("success"),
-        [`${prefixCls}-error`]: checkType("error"),
-        [`${prefixCls}-default`]: !disabled && checkType("default"),
-        [`${prefixCls}-normal`]: checkType("default"),
-        [`${prefixCls}-info`]: checkType("info"),
+      className: cls(prefixCls, className, {
+        [`${prefixCls}-${type}`]: type,
+        [`${prefixCls}-default`]: !disabled && type === types.default,
+        [`${prefixCls}-normal`]: type === types.default,
         [`${prefixCls}-disabled`]: disabled,
         [`${prefixCls}-loading`]: loading,
         [`${prefixCls}-block`]: block,
         [`${prefixCls}-hollow`]: hollow,
-        [`${prefixCls}-large`]: size === "large",
-        [`${prefixCls}-small`]: size === "small",
+        [`${prefixCls}-size-${size}`]: size !== sizes.default,
         [`${prefixCls}-dashed`]: dashed,
         [`${prefixCls}-circle`]: circle,
-        className
+        [`${prefixCls}-plain`]: plain
       })
     };
 

@@ -26,6 +26,7 @@ a {
   transition: color @default-transition;
   background-color: transparent;
   outline: none;
+  cursor: pointer;
 }
 
 *[hidden] {
@@ -34,4 +35,9 @@ a {
 
 .cuke-ui-no-animate {
   animation: none !important;
+}
+
+::placeholder {
+  color: @placeholder-color;
+  opacity: 1;
 }

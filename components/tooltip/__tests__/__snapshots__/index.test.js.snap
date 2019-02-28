@@ -149,6 +149,7 @@ exports[`<Tooltip/> should render a <Tooltip/> components 1`] = `
 exports[`<Tooltip/> should render custom position 1`] = `
 <div>
   <Tooltip
+    disabled={false}
     getPopupContainer={[Function]}
     hiddenArrow={false}
     onVisibleChange={[Function]}
@@ -167,6 +168,7 @@ exports[`<Tooltip/> should render custom position 1`] = `
       href=""
       htmlType="button"
       loading={false}
+      plain={false}
       prefixCls="cuke-button"
       size="default"
       type="default"
@@ -175,6 +177,7 @@ exports[`<Tooltip/> should render custom position 1`] = `
     </Button>
   </Tooltip>
   <Tooltip
+    disabled={false}
     getPopupContainer={[Function]}
     hiddenArrow={false}
     onVisibleChange={[Function]}
@@ -193,6 +196,7 @@ exports[`<Tooltip/> should render custom position 1`] = `
       href=""
       htmlType="button"
       loading={false}
+      plain={false}
       prefixCls="cuke-button"
       size="default"
       type="default"
@@ -201,6 +205,7 @@ exports[`<Tooltip/> should render custom position 1`] = `
     </Button>
   </Tooltip>
   <Tooltip
+    disabled={false}
     getPopupContainer={[Function]}
     hiddenArrow={false}
     onVisibleChange={[Function]}
@@ -219,6 +224,7 @@ exports[`<Tooltip/> should render custom position 1`] = `
       href=""
       htmlType="button"
       loading={false}
+      plain={false}
       prefixCls="cuke-button"
       size="default"
       type="default"
@@ -227,6 +233,7 @@ exports[`<Tooltip/> should render custom position 1`] = `
     </Button>
   </Tooltip>
   <Tooltip
+    disabled={false}
     getPopupContainer={[Function]}
     hiddenArrow={false}
     onVisibleChange={[Function]}
@@ -245,6 +252,7 @@ exports[`<Tooltip/> should render custom position 1`] = `
       href=""
       htmlType="button"
       loading={false}
+      plain={false}
       prefixCls="cuke-button"
       size="default"
       type="default"

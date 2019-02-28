@@ -47,30 +47,32 @@ import 'cuke-ui/lib/button/style.less';
 3. 使用 [babel-plugin-import](https://github.com/ant-design/babel-plugin-import)
 
 ```js
-//webpack.config.js
+// .babelrc.js
 module.exports = {
-...
-  module: {
-    rules: [
-      ...
-      {
-        test: /\.jsx?$/,
-        use: [
-          {
-            loader: "babel-loader",
-            options: {
-              babelrc: true,
-              plugins: [
-                ["import", {
-                  "libraryName":"cuke-ui",
-                  "style" : name => `${name}/style.less`
-                }],
-              ]
-            },
-          },
-      }
-    ]
-  }	  
+  plugins: [
+    ["babel-plugin-import", {
+      "libraryName": "cuke-ui",
+      "libraryDirectory": "es",
+      "style": true
+    },'cuke-ui'], 
+  ]
+}
+
+// 多个组件库
+module.exports = {
+  plugins: [
+    ["babel-plugin-import", {
+      "libraryName": "cuke-ui",
+      "libraryDirectory": "es",
+      "style": true
+    },'cuke-ui'], 
+    
+    ["babel-plugin-import", {
+      "libraryName": "antd",
+      "libraryDirectory": "es",
+      "style": true
+    },'antd'], 
+  ]
 }
 ```
 

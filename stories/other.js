@@ -1,14 +1,19 @@
-import React from 'react';
-import { storiesOf } from '@storybook/react';
-import BackTop from '../components/backTop';
-import Button from '../components/button';
+import React from "react";
+import { storiesOf } from "@storybook/react";
+import BackTop from "../components/back-top";
+import Button from "../components/button";
+import Divider from "../components/divider";
 
-storiesOf('其他', module)
-  .add('BackTop 回到顶部', () => (
+import "../components/back-top/styles.less";
+import "../components/button/styles.less";
+import "../components/divider/styles.less";
+
+storiesOf("其他", module)
+  .add("BackTop 回到顶部", () => (
     <div style={{ height: 2000 }}>
       <h2>基本使用: 往下滚动</h2>
 
-      <BackTop onClick={() => console.log('click')} />
+      <BackTop onClick={() => console.log("click")} />
 
       <h2>自定义偏移量： 距离顶部100px显示</h2>
 
@@ -25,3 +30,38 @@ storiesOf('其他', module)
       </BackTop>
     </div>
   ))
+  .add("Divider 分割线", () => (
+    <div style={{ width: 600 }}>
+      <h2>基本使用</h2>
+      <p>
+        cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui
+        cuke ui cuke ui cuke ui cuke ui cuke ui
+      </p>
+      <Divider />
+      <p>
+        cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui
+        cuke ui cuke ui cuke ui cuke ui cuke ui
+      </p>
+
+      <h2>垂直使用</h2>
+      <span>cuke-ui</span>
+      <Divider type="vertical" />
+      <span>cuke-ui</span>
+
+      <h2>虚线使用</h2>
+      <p>
+        cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui
+        cuke ui cuke ui cuke ui cuke ui cuke ui
+      </p>
+      <Divider dashed />
+      <p>
+        cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui cuke ui
+        cuke ui cuke ui cuke ui cuke ui cuke ui
+      </p>
+
+      <h2>不同方向</h2>
+      <Divider>标题居中</Divider>
+      <Divider position="left">标题在左</Divider>
+      <Divider position="right">标题在右</Divider>
+    </div>
+  ));

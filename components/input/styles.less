@@ -31,6 +31,14 @@
     box-shadow: @input-box-shadow;
   }
 
+  &-large {
+    height: @input-height-large;
+  }
+
+  &-small {
+    height: @input-height-small;
+  }
+
   &-disabled {
     cursor: not-allowed;
     color: @disabled-font-color;
@@ -45,19 +53,19 @@
   }
 
   &-group-addon-before {
-    > .cuke-input {
+    > .@{prefixCls} {
       border-bottom-right-radius: @border-radius !important;
       border-top-right-radius: @border-radius !important;
     }
   }
   &-group-addon-after {
-    > .cuke-input {
+    > .@{prefixCls} {
       border-bottom-left-radius: @border-radius !important;
       border-top-left-radius: @border-radius !important;
     }
   }
   &-group-addon-all {
-    > .cuke-input {
+    > .@{prefixCls} {
       border-radius: 0 !important;
     }
   }
@@ -66,7 +74,19 @@
     vertical-align: middle;
     .flex-center(space-around);
 
-    > .cuke-input {
+    &-small {
+      .@{prefixCls}-group-addon {
+        height: @input-height-small;
+      }
+    }
+
+    &-large {
+      .@{prefixCls}-group-addon {
+        height: @input-height-large;
+      }
+    }
+
+    > .@{prefixCls} {
       flex: 1 1 auto;
       width: 100%;
       margin-bottom: 0;
@@ -98,6 +118,62 @@
         border-bottom-left-radius: 0;
         border-top-left-radius: 0;
         border-left: none;
+      }
+    }
+  }
+
+  &-wrapper {
+    position: relative;
+    .@{prefixCls}-clear {
+      opacity: .5;
+      transition: @default-transition;
+      &:hover {
+        opacity: .7;
+      }
+    }
+    &.@{prefixCls}-has-prefix {
+      .@{prefixCls} {
+        padding-left: @input-prefix-offset + 20px;
+      }
+    }
+    &.@{prefixCls}-has-suffix {
+      .@{prefixCls} {
+        padding-right: @input-prefix-offset + 20px;
+      }
+    }
+  }
+
+  &-prefix,
+  &-suffix {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+    .flex-center();
+    cursor: pointer;
+    &, svg {
+      color: @disabled-font-color;
+      font-size: @font-size;
+    }
+  }
+
+  &-prefix {
+    left: @input-prefix-offset;
+  }
+
+  &-suffix {
+    right: @input-suffix-offset;
+  }
+
+  &-clear {
+    animation: cuke-zoom-in @default-transition forwards;
+    color: @font-color !important;
+  }
+
+  &-password {
+    &-suffix {
+      svg {
+        color: @font-color;
       }
     }
   }

@@ -43,7 +43,7 @@ export default class Modal extends PureComponent {
     prefixCls: "cuke-modal",
     visible: false,
     isStaticMethod: false, // 用来区分 是 Modal.xx() 还是 <Modal/>
-    getTarget: () => document.body,
+    getPopupContainer: () => document.body,
     width: 520,
     title: "",
     onOk: () => {},
@@ -93,7 +93,7 @@ export default class Modal extends PureComponent {
     closable: PropTypes.bool,
     maskClosable: PropTypes.bool,
     showMask: PropTypes.bool,
-    getTarget: PropTypes.func,
+    getPopupContainer: PropTypes.func,
     zIndex: PropTypes.number,
     width: PropTypes.number,
     footer: PropTypes.oneOfType([
@@ -103,7 +103,8 @@ export default class Modal extends PureComponent {
       PropTypes.object
     ]),
     okProps: PropTypes.object,
-    cancelProps: PropTypes.object
+    cancelProps: PropTypes.object,
+    wrapperClassName: PropTypes.string
   };
   constructor(props) {
     super(props);
@@ -256,7 +257,7 @@ export default class Modal extends PureComponent {
       okText,
       cancelText,
       confirmLoading,
-      getTarget,
+      getPopupContainer,
       centered,
       closable,
       maskClosable,
@@ -266,6 +267,7 @@ export default class Modal extends PureComponent {
       zIndex,
       okButtonProps,
       cancelButtonProps,
+      wrapperClassName,
       iconType, //eslint-disable-line
       staticMethodType, //eslint-disable-line
       isStaticMethod, //eslint-disable-line
@@ -296,7 +298,7 @@ export default class Modal extends PureComponent {
         <div
           role="dialog"
           tabIndex="-1"
-          className={cls(`${prefixCls}-wrap`, {
+          className={cls(`${prefixCls}-wrap`, wrapperClassName, {
             [`${prefixCls}-centered`]: centered
           })}
         >
@@ -357,7 +359,7 @@ export default class Modal extends PureComponent {
           </div>
         </div>
       </>,
-      getTarget()
+      getPopupContainer()
     );
   }
 }

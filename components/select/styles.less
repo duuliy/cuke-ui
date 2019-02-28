@@ -5,11 +5,12 @@
 .@{prefixCls} {
   position: relative;
   display: inline-block;
+  width: @cuke-select-width;
   &-inner {
     display: inline-block;
     position: relative;
     cursor: pointer;
-    >.cuke-input:not(.cuke-input-disabled) {
+    .cuke-input:not(.cuke-input-disabled) {
       cursor: pointer;
     }
   }
@@ -25,16 +26,16 @@
     animation: cuke-picker-close @default-transition forwards;
     pointer-events: none;
   }
-  &-input {
-    width: @cuke-select-width;
-  }
   &-arrow {
     position: absolute;
-    right: 20px;
+    right: 0;
     top: 50%;
     transform: translateY(-50%);
     color: @disabled-font-color;
     transition: @default-transition;
+  }
+  &-loading {
+    animation: cuke-spin @loading-time linear infinite;
   }
   &-content {
     width: 100%;
@@ -55,7 +56,7 @@
   &-option {
     width: 100%;
     border-bottom: 1px solid @border-color;
-    padding: 10px 30px;
+    padding: 10px 8px;
     background: #fff;
     transition: all @default-transition;
     cursor: pointer;
@@ -73,6 +74,7 @@
       background-color: @primary-color;
       border-color: @primary-color;
       border-bottom: 1px solid @primary-color;
+      text-shadow: @default-text-shadow;
       &:hover {
         border-color: transparent;
         background-color: @primary-color;

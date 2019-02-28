@@ -40,7 +40,7 @@ const themes = ["dark", "light"];
 export default class Tooltip extends PureComponent {
   closeTimeDelay = 100;
   state = {
-    visible: this.props.visible || null,
+    visible: null,
     left: 0,
     top: 0,
     openLock: false,
@@ -54,7 +54,8 @@ export default class Tooltip extends PureComponent {
     theme: themes[0],
     onVisibleChange: () => {},
     getPopupContainer: () => document.body,
-    hiddenArrow: false // 隐藏三角箭头
+    hiddenArrow: false, // 隐藏三角箭头
+    disabled: false
   };
 
   static propTypes = {
@@ -65,7 +66,8 @@ export default class Tooltip extends PureComponent {
     position: PropTypes.oneOf(["top", "right", "left", "bottom"]),
     theme: PropTypes.oneOf(themes),
     getPopupContainer: PropTypes.func,
-    hiddenArrow: PropTypes.any
+    hiddenArrow: PropTypes.any,
+    disabled: PropTypes.bool
   };
 
   constructor(props) {
@@ -76,7 +78,8 @@ export default class Tooltip extends PureComponent {
     this.closeTimer = null;
   }
 
-  componentWillReceiveProps(nextProps) {
+  // eslint-disable-next-line
+  UNSAFE_componentWillReceiveProps(nextProps) {
     this.setState({
       visible: nextProps.visible,
       openLock: !nextProps.visible,
@@ -119,9 +122,9 @@ export default class Tooltip extends PureComponent {
     return positions[this.props.position];
   };
 
-  setWrapperBounding() {
+  setWrapperBounding(cb = () => {}) {
     const { left, top } = this.getWrapperBounding();
-    this.setState({ left, top });
+    this.setState({ left, top }, cb);
   }
 
   onClickOutsideHandler = e => {
@@ -143,14 +146,15 @@ export default class Tooltip extends PureComponent {
     }
     this.setState({ visible: true, closeLock: false }, () => {
       if (!this.state.openLock) {
-        this.setWrapperBounding();
-        this.props.onVisibleChange(true);
-        this.setState({ openLock: true, closeLock: false }, () => {
-          scrollIntoViewIfNeeded(this.wrapper.current, {
-            scrollMode: "if-needed",
-            behavior: "smooth",
-            block: "nearest",
-            inline: "nearest"
+        this.setWrapperBounding(() => {
+          this.props.onVisibleChange(true);
+          this.setState({ openLock: true, closeLock: false }, () => {
+            scrollIntoViewIfNeeded(this.wrapper.current, {
+              scrollMode: "if-needed",
+              behavior: "smooth",
+              block: "nearest",
+              inline: "nearest"
+            });
           });
         });
       }
@@ -181,6 +185,18 @@ export default class Tooltip extends PureComponent {
     this.setWrapperBounding();
   }, 500);
 
+  setDefaultPositionIfHaveDefaultVisible = () => {
+    const { visible } = this.props;
+    if (visible) {
+      this.setState(
+        {
+          visible
+        },
+        this.setWrapperBounding
+      );
+    }
+  };
+
   render() {
     const {
       prefixCls,
@@ -192,6 +208,7 @@ export default class Tooltip extends PureComponent {
       hiddenArrow,
       wrapperClassName,
       getPopupContainer,
+      disabled,
       onVisibleChange, // eslint-disable-line
       visible: visibleFromProps, // eslint-disable-line
       ...attr
@@ -200,12 +217,14 @@ export default class Tooltip extends PureComponent {
 
     const isHover = trigger === triggerTypes["hover"];
 
-    const bindTriggerEvents = isHover
-      ? {
-          onMouseEnter: this.onOpenTooltip,
-          onMouseLeave: this.onCloseTooltip
-        }
-      : { onClick: this.onOpenTooltip };
+    const bindTriggerEvents =
+      !disabled &&
+      (isHover
+        ? {
+            onMouseEnter: this.onOpenTooltip,
+            onMouseLeave: this.onCloseTooltip
+          }
+        : { onClick: this.onOpenTooltip });
 
     return (
       <div
@@ -259,5 +278,6 @@ export default class Tooltip extends PureComponent {
   componentDidMount() {
     window.addEventListener("click", this.onClickOutsideHandler, false);
     window.addEventListener("resize", this.onResizeHandler);
+    this.setDefaultPositionIfHaveDefaultVisible();
   }
 }

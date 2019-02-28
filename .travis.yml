@@ -1,7 +1,6 @@
 language: node_js
 
 node_js:
-  - "8"
   - "10"
 
 sudo: false
@@ -26,4 +25,21 @@ script:
   - yarn lint
   - yarn test
 
-after_script: "yarn ci"
+after_script: 
+  - yarn ci:coverage
+
+
+before_deploy: 
+  - yarn build:docs
+
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN
+  local_dir: .out
+  on:
+    branch: master
+
+env:
+  global:
+    - GH_REF: github.com/cuke-ui/cuke-ui.git
