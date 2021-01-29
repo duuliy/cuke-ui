@@ -1,4 +1,4 @@
-import React, { PureComponent, cloneElement, isValidElement } from "react";
+import React, { PureComponent, cloneElement, isValidElement, createRef } from "react";
 import PropTypes from "prop-types";
 import { createPortal, render, unmountComponentAtNode } from "react-dom";
 import cls from "classnames";
@@ -22,6 +22,8 @@ const typeConfig = {
   confirm: "confirm",
   prompt: "prompt"
 };
+
+const ESC_KEY_CODE = 27
 
 /**
  * const modal = Modal.confirm()  // 得到当前 Modal 引用
@@ -59,7 +61,8 @@ export default class Modal extends PureComponent {
     showMask: true,
     zIndex: 999,
     okButtonProps: {},
-    cancelButtonProps: {}
+    cancelButtonProps: {},
+    escClose: true,
   };
   static propTypes = {
     onCancel: PropTypes.func,
@@ -104,10 +107,13 @@ export default class Modal extends PureComponent {
     ]),
     okProps: PropTypes.object,
     cancelProps: PropTypes.object,
-    wrapperClassName: PropTypes.string
+    wrapperClassName: PropTypes.string,
+    escClose: PropTypes.bool,
   };
   constructor(props) {
     super(props);
+    this.wrapperRef = createRef()
+    this.modal = createRef()
   }
   destroy = () => {
     unmountComponentAtNode(this._containerRef);
@@ -238,8 +244,22 @@ export default class Modal extends PureComponent {
     if (!this.props.isStaticMethod) {
       if (this.props.visible === true) {
         this.disableScroll();
+        if(this.wrapperRef.current){
+          this.wrapperRef.current.focus()
+        }
       } else {
         this.enableScroll();
+      }
+    }
+  }
+  onKeyDown = (e) => {
+    if(!this.props.escClose) {
+      return
+    }
+    if(e.keyCode === ESC_KEY_CODE) {
+      e.stopPropagation()
+      if(this.props.onCancel){
+        this._onCancel()
       }
     }
   }
@@ -271,6 +291,7 @@ export default class Modal extends PureComponent {
       iconType, //eslint-disable-line
       staticMethodType, //eslint-disable-line
       isStaticMethod, //eslint-disable-line
+      escClose, // eslint-disable-line
       ...attr
     } = this.props;
 
@@ -299,8 +320,11 @@ export default class Modal extends PureComponent {
           role="dialog"
           tabIndex="-1"
           className={cls(`${prefixCls}-wrap`, wrapperClassName, {
-            [`${prefixCls}-centered`]: centered
+            [`${prefixCls}-centered`]: centered,
+            [`${prefixCls}-wrap-visible`]: _visible,
           })}
+          onKeyDown={this.onKeyDown}
+          ref={this.wrapperRef}
         >
           <div
             className={cls(prefixCls, className, {
@@ -310,7 +334,7 @@ export default class Modal extends PureComponent {
                 : init && !_visible,
               "no-title": !title
             })}
-            ref={node => (this.modal = node)}
+            ref={this.modal}
             style={{
               ...style,
               width,

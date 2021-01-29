@@ -11,6 +11,7 @@ import Timeline from "../components/timeline";
 import Tag from "../components/tag";
 import CityPicker from "../components/city-picker";
 import Table from "../components/table";
+import CountDown from "../components/count-down";
 import { SuccessIcon, InfoIcon, ErrorIcon, UserIcon } from "../components/icon";
 import Collapse from "../components/collapse";
 
@@ -29,6 +30,7 @@ import "../components/card/styles.less";
 import "../components/empty/styles.less";
 import "../components/badge/styles.less";
 import "../components/table/styles.less";
+import "../components/count-down/styles.less";
 import "./styles/dataDisplay.less";
 import "./styles/tag.less";
 import { Calendar, Popconfirm, Empty, Divider, Input } from "../components";
@@ -1341,4 +1343,99 @@ storiesOf("数据展示", module)
       <h2>不显示表头</h2>
       <Table columns={columns} dataSource={dataSource} showHeader={false} />
     </div>
-  ));
+  ))
+  .add("CountDown 倒计时", () => (
+    <div>
+      <h2>基本使用</h2>
+      <CountDown />
+
+      <h2>自定义内容</h2>
+      <CountDown>
+        {
+          (time, disabled) => (
+            <Button disabled={disabled}>{disabled ? `${time} s 后重获` : '点击获取验证码'}</Button>
+          )
+        }
+      </CountDown>
+
+      <div style={{height: 20}}/>
+
+      <CountDown autoStart>
+        {
+          (time) => (
+            <Tag circle type="primary">{time}</Tag>
+          )
+        }
+      </CountDown>
+
+      <div style={{height: 20}}/>
+
+      <CountDown autoStart>
+        {
+          (time) => (
+            <Badge count={time}>
+            <Button>
+              购物车数量
+            </Button>
+            </Badge>
+          )
+        }
+      </CountDown>
+
+
+
+      <h2>自定义时长</h2>
+      <CountDown defaultCountDown={20} />
+
+      <h2>2s 改变一次</h2>
+      <CountDown interval={2} />
+
+      <h2>配合Tooltip 使用</h2>
+      <CountDown autoStart>
+        {
+          (time,disabled) => (
+            <Tooltip title={`${time} s 后重获`} visible position="right">
+              <Button disabled={disabled}>获取验证码</Button>
+            </Tooltip>
+          )
+        }
+      </CountDown>
+
+      <h2>回调</h2>
+      <CountDown
+        defaultCountDown={10}
+        onStart={(time)=> console.log('onStart',time)}
+        onEnd={(time)=> console.log('onEnd', time)}
+        onChange={(time)=> console.log('onChange', time)}
+      />
+
+      <h2>时间倒计时</h2>
+      <CountDown
+        defaultCountDown={1559100698744}
+        type="date"
+      />
+      <div style={{height: 20}}/>
+      <CountDown
+        defaultCountDown={"2029/5/30 18:45:06"}
+        type="date"
+      />
+
+      <h2>自定义时间倒计时格式</h2>
+      <CountDown
+        defaultCountDown={1559100698744}
+        type="date"
+        autoStart
+      >
+       {
+          (time) => (
+            <div style={{color: '#444'}}>
+            {time.d} <Tag type="primary">天</Tag>
+            {time.h} <Tag type="primary">时</Tag>
+            {time.m} <Tag type="primary">分</Tag>
+            {time.s} <Tag type="primary">秒</Tag>
+            </div>
+          )
+        }
+      </CountDown>
+    </div>
+  ))

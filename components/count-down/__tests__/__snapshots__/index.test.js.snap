@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<CountDown/> should render CountDown 1`] = `
+<div>
+  <span
+    class="cuke-count-down"
+  >
+    0
+  </span>
+  <span
+    class="cuke-count-down"
+  >
+    <button
+      class="cuke-button cuke-button-default cuke-button-normal"
+      type="button"
+    >
+      <span>
+        点击获取验证码
+      </span>
+    </button>
+  </span>
+  <span
+    class="cuke-count-down"
+  >
+    0 天 0 时 0 分 0 秒
+  </span>
+  <span
+    class="cuke-count-down"
+  >
+    <div>
+      0000
+    </div>
+  </span>
+</div>
+`;
